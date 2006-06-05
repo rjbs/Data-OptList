@@ -1,0 +1,17 @@
+Revision history for Sub-Exporter
+
+0.100   2006-06-05
+        broken out of Sub-Exporter into its own dist
+        renamed routines to be easier to type
+
+
+0.040   2006-05-11 (in Sub-Exporter)
+        tweaks to Data::OptList, moving toward its own dist: now it exports
+        expand_opt_list is now opt_list_as_hash
+
+0.???   2006-05-10 (in Sub-Exporter)
+        require Params::Util for craftier opt list validation
+
+0.???   2006-04-26 (in Sub-Exporter)
+        broken out of Sub::Exporter module
+        remove an "optimization" that broke expand_opt_list

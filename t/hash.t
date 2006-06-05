@@ -9,7 +9,7 @@ These tests test option list expansion (from an option list into a hashref).
 =cut
 
 use Sub::Install;
-use Test::More 'no_plan';
+use Test::More tests => 13;
 
 BEGIN { use_ok('Data::OptList'); }
 
@@ -21,9 +21,27 @@ Sub::Install::install_sub({
 });
 
 is_deeply(
-  OPTH([]),
+  OPTH(),
   {},
   "empty opt list expands properly",
+);
+
+is_deeply(
+  OPTH(undef),
+  {},
+  "undef opt list expands properly",
+);
+
+is_deeply(
+  OPTH([]),
+  {},
+  "empty arrayref opt list expands properly",
+);
+
+is_deeply(
+  OPTH({}),
+  {},
+  "empty hashref opt list expands properly",
 );
 
 is_deeply(
