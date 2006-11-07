@@ -16,3 +16,4 @@ t/pod.t
 t/pod-coverage.t
 README
 Changes
+t/perl-critic.t
