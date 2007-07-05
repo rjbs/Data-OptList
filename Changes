@@ -1,9 +1,12 @@
 Revision history for Sub-Exporter
 
+0.102   2006-07-04
+        improved documentation
+        tweaked some Perl::Critic-offending code
+
 0.100   2006-06-05
         broken out of Sub-Exporter into its own dist
         renamed routines to be easier to type
-
 
 0.040   2006-05-11 (in Sub-Exporter)
         tweaks to Data::OptList, moving toward its own dist: now it exports

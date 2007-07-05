@@ -3,19 +3,23 @@ package Data::OptList;
 use strict;
 use warnings;
 
+use List::Util ();
+use Params::Util ();
+use Sub::Install 0.92 ();
+
 =head1 NAME
 
 Data::OptList - parse and validate simple name/value option pairs
 
 =head1 VERSION
 
-version 0.101
+version 0.102
 
   $Id$
 
 =cut
 
-our $VERSION = '0.101';
+our $VERSION = '0.102';
 
 =head1 SYNOPSIS
 
@@ -50,38 +54,32 @@ Hashes are great for storing named data, but if you want more than one entry
 for a name, you have to use a list of pairs.  Even then, this is really boring
 to write:
 
-  @values = (
+  $values = [
     foo => undef,
     bar => undef,
     baz => undef,
     xyz => { ... },
-  );
+  ];
 
 Just look at all those undefs!  Don't worry, we can get rid of those:
 
-  @values = (
+  $values = [
     map { $_ => undef } qw(foo bar baz),
     xyz => { ... },
-  );
+  ];
 
 Aaaauuugh!  We've saved a little typing, but now it requires thought to read,
 and thinking is even worse than typing.
 
 With Data::OptList, you can do this instead:
 
-  Data::OptList::mkopt([
+  $values = Data::OptList::mkopt([
     qw(foo bar baz),
     xyz => { ... },
   ]);
 
 This works by assuming that any defined scalar is a name and any reference
 following a name is its value.
-
-=cut
-
-use List::Util ();
-use Params::Util ();
-use Sub::Install 0.92 ();
 
 =head1 FUNCTIONS
 
@@ -97,7 +95,7 @@ use Sub::Install 0.92 ();
 This produces an array of arrays; the inner arrays are name/value pairs.
 Values will be either "undef" or a reference.
 
-Valid inputs:
+Valid values for C<$input>:
 
  undef    -> []
  hashref  -> [ [ key1 => value1 ] ... ] # non-ref values become undef
@@ -114,17 +112,28 @@ more than once.
 
 C<$must_be> is either a scalar or array of scalars; it defines what kind(s) of
 refs may be values.  If an invalid value is found, an exception is thrown.  If
-no value is passed for this argument, any reference is valid.
+no value is passed for this argument, any reference is valid.  If C<$must_be>
+specifies that values must be CODE, HASH, ARRAY, or SCALAR, then Params::Util
+is used to check whether the given value can provide that interface.
+Otherwise, it checks that the given value is an object of the kind.
+
+In other words:
+
+  [ qw(SCALAR HASH Object::Known) ]
+
+Means:
+
+  _SCALAR0($value) or _HASH($value) or _INSTANCE($value, 'Object::Known')
 
 =cut
 
 my %test_for;
 BEGIN {
   %test_for = (
-    CODE   => \&Params::Util::_CODELIKE,
-    HASH   => \&Params::Util::_HASHLIKE,
-    ARRAY  => \&Params::Util::_ARRAYLIKE,
-    SCALAR => \&Params::Util::_SCALAR0,
+    CODE   => \&Params::Util::_CODELIKE,  ## no critic
+    HASH   => \&Params::Util::_HASHLIKE,  ## no critic
+    ARRAY  => \&Params::Util::_ARRAYLIKE, ## no critic
+    SCALAR => \&Params::Util::_SCALAR0,   ## no critic
   );
 }
 
@@ -133,9 +142,11 @@ sub __is_a {
 
   return List::Util::first { __is_a($got, $_) } @$expected if ref $expected;
 
-  return defined
-    (exists($test_for{$expected}) ? $test_for{$expected}->($got)
-                                 : Params::Util::_INSTANCE($got, $expected));
+  return defined (
+    exists($test_for{$expected})
+    ? $test_for{$expected}->($got)
+    : Params::Util::_INSTANCE($got, $expected) ## no critic
+  );
 }
 
 sub mkopt {
@@ -150,7 +161,7 @@ sub mkopt {
   my @return;
   my %seen;
 
-  for (my $i = 0; $i < @$opt_list; $i++) {
+  for (my $i = 0; $i < @$opt_list; $i++) { ## no critic
     my $name = $opt_list->[$i];
     my $value;
 
@@ -180,8 +191,8 @@ sub mkopt {
 
   my $opt_hash = Data::OptList::mkopt_hash($input, $moniker, $must_be);
 
-Given valid C<mkopt> input, this routine returns a hash.  It will throw an
-exception if any name has more than one value.
+Given valid C<L</mkopt>> input, this routine returns a reference to a hash.  It
+will throw an exception if any name has more than one value.
 
 =cut
 
@@ -196,8 +207,7 @@ sub mkopt_hash {
 
 =head1 EXPORTS
 
-Both C<mkopt> and C<mkopt_hash> may be exported on
-request.
+Both C<mkopt> and C<mkopt_hash> may be exported on request.
 
 =cut
 
@@ -213,14 +223,13 @@ Ricardo SIGNES, C<< <rjbs@cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-sub-exporter@rt.cpan.org>,
-or through the web interface at L<http://rt.cpan.org>. I will be notified, and
-then you'll automatically be notified of progress on your bug as I make
-changes.
+Please report any bugs or feature requests at L<http://rt.cpan.org>. I will be
+notified, and then you'll automatically be notified of progress on your bug as
+I make changes.
 
 =head1 COPYRIGHT
 
-Copyright 2006 Ricardo SIGNES.  This program is free software;  you can
+Copyright 2006-2007, Ricardo SIGNES.  This program is free software;  you can
 redistribute it and/or modify it under the same terms as Perl itself.
 
 =cut

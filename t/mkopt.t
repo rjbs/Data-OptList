@@ -22,7 +22,7 @@ Sub::Install::install_sub({
 sub OPT {
   # specifying moniker is tedious (also, these tests predate them)
   splice @_, 1, 0, 'test' if @_ > 1;
-  &mkopt;
+  mkopt(@_);
 }
 
 is_deeply(
