@@ -13,11 +13,11 @@ Data::OptList - parse and validate simple name/value option pairs
 
 =head1 VERSION
 
-version 0.103
+version 0.104
 
 =cut
 
-our $VERSION = '0.103';
+our $VERSION = '0.104';
 
 =head1 SYNOPSIS
 

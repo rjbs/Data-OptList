@@ -1,11 +1,6 @@
 NAME
     Data::OptList - parse and validate simple name/value option pairs
 
-VERSION
-    version 0.102
-
-      $Id: /my/cs/projects/Data-OptList/trunk/lib/Data/OptList.pm 31979 2007-07-05T02:17:36.805594Z rjbs  $
-
 SYNOPSIS
       use Data::OptList;
 

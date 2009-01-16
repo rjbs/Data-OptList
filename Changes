@@ -1,5 +1,8 @@
 Revision history for Sub-Exporter
 
+0.104     2009-01-16
+          add repo info to metadata
+
 0.103     2007-11-01
           require taint-safe Test::Pod
 

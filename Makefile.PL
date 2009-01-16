@@ -12,4 +12,7 @@ requires('Sub::Install' => 0.92); # exporter, needed by Data::OptList
 requires('List::Util'   => 0.00); # unknown minimum; used for "first"
 requires('Params::Util' => 0.14); # _HASHLIKE, _ARRAYLIKE, _CODELIKE
 
+repository('http://github.com/rjbs/data-optlist');
+auto_manifest;
+
 WriteAll();
