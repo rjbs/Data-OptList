@@ -23,7 +23,7 @@ our $VERSION = '0.105';
 
   use Data::OptList;
 
-  my $options = Data::Optlist::mkopt([
+  my $options = Data::OptList::mkopt([
     qw(key1 key2 key3 key4),
     key5 => { ... },
     key6 => [ ... ],
