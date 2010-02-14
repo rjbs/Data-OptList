@@ -8,7 +8,7 @@ author        ('Ricardo SIGNES <rjbs@cpan.org>');
 license       ('perl');
 version_from  ('lib/Data/OptList.pm');
 
-requires('Sub::Install' => 0.92); # exporter, needed by Data::OptList
+requires('Sub::Install' => 0.921); # exporter, needed by Data::OptList
 requires('List::Util'   => 0.00); # unknown minimum; used for "first"
 requires('Params::Util' => 0.14); # _HASHLIKE, _ARRAYLIKE, _CODELIKE
 

@@ -5,7 +5,7 @@ use warnings;
 
 use List::Util ();
 use Params::Util ();
-use Sub::Install 0.92 ();
+use Sub::Install 0.921 ();
 
 =head1 NAME
 

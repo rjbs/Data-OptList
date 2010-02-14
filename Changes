@@ -1,5 +1,8 @@
 Revision history for Sub-Exporter
 
+0.106     2010-02-14
+          correct version style mismatch for Sub::Install (thanks, brian d foy)
+
 0.105     2010-01-14
           fix a typo in documenation (thanks, Florian Ragwitz)
 
