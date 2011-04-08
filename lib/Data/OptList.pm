@@ -85,37 +85,45 @@ following a name is its value.
 
 =head2 mkopt
 
-  my $opt_list = Data::OptList::mkopt(
-    $input,
-    $moniker,
-    $require_unique,
-    $must_be,
-  );
+  my $opt_list = Data::OptList::mkopt($input, \%arg);
+
+Valid arguments are:
+
+  moniker        - a word used in errors to describe the opt list; encouraged
+  require_unique - if true, no name may appear more than once
+  must_be        - types to which opt list values are limited (described below)
+  name_test      - a coderef used to test whether a value can be a name
+                   (described below, but you probably don't want this)
 
 This produces an array of arrays; the inner arrays are name/value pairs.
 Values will be either "undef" or a reference.
+
+Positional parameters may be used for compability with the old C<mkopt>
+interface:
+
+  my $opt_list = Data::OptList::mkopt($input, $moniker, $req_uni, $must_be);
 
 Valid values for C<$input>:
 
  undef    -> []
  hashref  -> [ [ key1 => value1 ] ... ] # non-ref values become undef
- arrayref -> every value followed by a ref becomes a pair: [ value => ref   ]
-             every value followed by undef becomes a pair: [ value => undef ]
-             otherwise, it becomes [ value => undef ] like so:
+ arrayref -> every name followed by a non-name becomes a pair: [ name => ref ]
+             every name followed by undef becomes a pair: [ name => undef ]
+             otherwise, it becomes [ name => undef ] like so:
              [ "a", "b", [ 1, 2 ] ] -> [ [ a => undef ], [ b => [ 1, 2 ] ] ]
 
-C<$moniker> is a name describing the data, which will be used in error
-messages.
+By default, a I<name> is any defined non-reference.  The C<name_test> parameter
+can be a code ref that tests whether the argument passed it is a name or not.
+This should be used rarely.  Interactions between C<require_unique> and
+C<name_test> are not yet particularly elegant, as C<require_unique> just tests
+string equality.  B<This may change.>
 
-If C<$require_unique> is true, an error will be thrown if any name is given
-more than once.
-
-C<$must_be> is either a scalar or array of scalars; it defines what kind(s) of
-refs may be values.  If an invalid value is found, an exception is thrown.  If
-no value is passed for this argument, any reference is valid.  If C<$must_be>
-specifies that values must be CODE, HASH, ARRAY, or SCALAR, then Params::Util
-is used to check whether the given value can provide that interface.
-Otherwise, it checks that the given value is an object of the kind.
+The C<must_be> parameter is either a scalar or array of scalars; it defines
+what kind(s) of refs may be values.  If an invalid value is found, an exception
+is thrown.  If no value is passed for this argument, any reference is valid.
+If C<must_be> specifies that values must be CODE, HASH, ARRAY, or SCALAR, then
+Params::Util is used to check whether the given value can provide that
+interface.  Otherwise, it checks that the given value is an object of the kind.
 
 In other words:
 
@@ -162,6 +170,8 @@ sub mkopt {
   } else {
     ($moniker, $require_unique, $must_be) = @_;
   }
+
+  $moniker = 'unnamed' unless defined $moniker;
 
   return [] unless $opt_list;
 
