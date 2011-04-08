@@ -8,10 +8,10 @@ These tests test option list cannonization (from an option list into a aref).
 
 =cut
 
+use Data::OptList;
 use Sub::Install;
-use Test::More tests => 19;
+use Test::More 0.88;
 
-BEGIN { use_ok('Data::OptList'); }
 
 # let's get a convenient copy to use:
 Sub::Install::install_sub({
@@ -105,6 +105,17 @@ like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['ARRAY']); };
 like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
 
+eval {
+  mkopt(
+    [ foo => { a => 1 }, ':bar', 'baz' ],
+    {
+      moniker => 'test',
+      must_be => ['ARRAY'],
+    }
+  );
+};
+like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
+
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, 'Test::DOL::Obj'); };
 like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
 
@@ -125,3 +136,30 @@ is_deeply(
   [ [ foo => { a => 1 } ], [ ':bar' => undef ], [ baz => undef ] ],
   "previously tested expansion OK with require_unique",
 );
+
+# This one is complicated. We defined valid values as only hash-like
+# references, so other reference types, like arrayrefs, can be "names."
+# -- rjbs, 2011-04-08
+is_deeply(
+  mkopt(
+    [
+      foo => { a => 1 },
+      bar => undef,
+      baz =>
+      xyz => [ 1, 2, 3 ],
+    ],
+    {
+      moniker  => 'test',
+      val_test => sub { Params::Util::_HASHLIKE($_[0]) },
+    },
+  ),
+  [
+    [ foo => { a => 1 } ],
+    [ bar => undef ],
+    [ baz => undef ],
+    [ xyz => undef ],
+    [ [ 1, 2, 3 ], undef ],
+  ],
+);
+
+done_testing;
