@@ -1,5 +1,11 @@
 Revision history for Sub-Exporter
 
+0.107     2011-04-08
+
+          mkopt now prefers named parameters; docs updated
+
+          added the name_test parameter to mkopt
+
 0.106     2010-02-14
           correct version style mismatch for Sub::Install (thanks, brian d foy)
 

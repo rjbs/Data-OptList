@@ -1,23 +1,11 @@
-
-package Data::OptList;
 use strict;
 use warnings;
+package Data::OptList;
+# ABSTRACT: parse and validate simple name/value option pairs
 
 use List::Util ();
 use Params::Util ();
 use Sub::Install 0.921 ();
-
-=head1 NAME
-
-Data::OptList - parse and validate simple name/value option pairs
-
-=head1 VERSION
-
-version 0.106
-
-=cut
-
-our $VERSION = '0.106';
 
 =head1 SYNOPSIS
 
@@ -81,9 +69,7 @@ With Data::OptList, you can do this instead:
 This works by assuming that any defined scalar is a name and any reference
 following a name is its value.
 
-=head1 FUNCTIONS
-
-=head2 mkopt
+=func mkopt
 
   my $opt_list = Data::OptList::mkopt($input, \%arg);
 
@@ -210,7 +196,7 @@ sub mkopt {
   return \@return;
 }
 
-=head2 mkopt_hash
+=func mkopt_hash
 
   my $opt_hash = Data::OptList::mkopt_hash($input, $moniker, $must_be);
 
@@ -239,22 +225,5 @@ BEGIN {
     exports => [qw(mkopt mkopt_hash)],
   };
 }
-
-=head1 AUTHOR
-
-Ricardo SIGNES, C<< <rjbs@cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests at L<http://rt.cpan.org>. I will be
-notified, and then you'll automatically be notified of progress on your bug as
-I make changes.
-
-=head1 COPYRIGHT
-
-Copyright 2006-2007, Ricardo SIGNES.  This program is free software;  you can
-redistribute it and/or modify it under the same terms as Perl itself.
-
-=cut
 
 1;
