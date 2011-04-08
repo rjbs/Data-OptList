@@ -137,20 +137,23 @@ is_deeply(
   "previously tested expansion OK with require_unique",
 );
 
-# This one is complicated. We defined valid values as only hash-like
-# references, so other reference types, like arrayrefs, can be "names."
+# This one is complicated. We defined name values as only non-references (the
+# default) or arrayrefs, so arrayrefs are not turned into values as they
+# usually are.  (The subsequent test shows the default expectation.)
 # -- rjbs, 2011-04-08
+my @input =(
+  foo => { a => 1 },
+  bar => undef,
+  baz =>
+  xyz => [ 1, 2, 3 ],
+);
+
 is_deeply(
   mkopt(
-    [
-      foo => { a => 1 },
-      bar => undef,
-      baz =>
-      xyz => [ 1, 2, 3 ],
-    ],
+    [ @input ],
     {
-      moniker  => 'test',
-      val_test => sub { Params::Util::_HASHLIKE($_[0]) },
+      moniker   => 'test',
+      name_test => sub { ! ref $_[0] or Params::Util::_ARRAYLIKE($_[0]) },
     },
   ),
   [
@@ -159,6 +162,21 @@ is_deeply(
     [ baz => undef ],
     [ xyz => undef ],
     [ [ 1, 2, 3 ], undef ],
+  ],
+);
+
+is_deeply(
+  mkopt(
+    [ @input ],
+    {
+      moniker   => 'test',
+    },
+  ),
+  [
+    [ foo => { a => 1 } ],
+    [ bar => undef ],
+    [ baz => undef ],
+    [ xyz => [ 1, 2, 3 ] ],
   ],
 );
 

@@ -153,19 +153,19 @@ sub mkopt {
   my ($opt_list) = shift;
 
   my ($moniker, $require_unique, $must_be); # the old positional args
-  my $val_test;
+  my $name_test;
 
   if (@_ == 1 and Params::Util::_HASHLIKE($_[0])) {
     my $arg = $_[0];
-    ($moniker, $require_unique, $must_be, $val_test)
-      = @$arg{ qw(moniker require_unique must_be val_test) };
+    ($moniker, $require_unique, $must_be, $name_test)
+      = @$arg{ qw(moniker require_unique must_be name_test) };
   } else {
     ($moniker, $require_unique, $must_be) = @_;
   }
 
   return [] unless $opt_list;
 
-  $val_test ||= sub { ref $_[0] };
+  $name_test ||= sub { ! ref $_[0] };
 
   $opt_list = [
     map { $_ => (ref $opt_list->{$_} ? $opt_list->{$_} : ()) } keys %$opt_list
@@ -182,10 +182,10 @@ sub mkopt {
       Carp::croak "multiple definitions provided for $name" if $seen{$name}++;
     }
 
-    if    ($i == $#$opt_list)              { $value = undef;            }
-    elsif (not defined $opt_list->[$i+1])  { $value = undef; $i++       }
-    elsif ($val_test->($opt_list->[$i+1])) { $value = $opt_list->[++$i] }
-    else                                   { $value = undef;            }
+    if    ($i == $#$opt_list)               { $value = undef;            }
+    elsif (not defined $opt_list->[$i+1])   { $value = undef; $i++       }
+    elsif ($name_test->($opt_list->[$i+1])) { $value = undef;            }
+    else                                    { $value = $opt_list->[++$i] }
 
     if ($must_be and defined $value) {
       unless (__is_a($value, $must_be)) {
