@@ -1,6 +1,6 @@
 Revision history for Sub-Exporter
 
-0.107     2011-04-08
+{{$NEXT}}
 
           mkopt now prefers named parameters; docs updated
 
@@ -26,13 +26,16 @@ Revision history for Sub-Exporter
           broken out of Sub-Exporter into its own dist
           renamed routines to be easier to type
 
-0.040     2006-05-11 (in Sub-Exporter)
+0.040     2006-05-11
+          (part of Sub-Exporter)
           tweaks to Data::OptList, moving toward its own dist: now it exports
           expand_opt_list is now opt_list_as_hash
 
-0.???     2006-05-10 (in Sub-Exporter)
+0.???     2006-05-10
+          (part of Sub-Exporter)
           require Params::Util for craftier opt list validation
 
-0.???     2006-04-26 (in Sub-Exporter)
+0.???     2006-04-26
+          (part of Sub-Exporter)
           broken out of Sub::Exporter module
           remove an "optimization" that broke expand_opt_list
