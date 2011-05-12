@@ -84,7 +84,7 @@ Valid arguments are:
 This produces an array of arrays; the inner arrays are name/value pairs.
 Values will be either "undef" or a reference.
 
-Positional parameters may be used for compability with the old C<mkopt>
+Positional parameters may be used for compatibility with the old C<mkopt>
 interface:
 
   my $opt_list = Data::OptList::mkopt($input, $moniker, $req_uni, $must_be);
