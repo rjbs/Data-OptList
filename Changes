@@ -2,6 +2,9 @@ Revision history for Sub-Exporter
 
 {{$NEXT}}
 
+0.108     2013-07-05 21:43:56 America/New_York
+          repackage, new bug tracker
+
 0.107     2011-05-06 11:24:45 America/New_York
 
           mkopt now prefers named parameters; docs updated
