@@ -149,12 +149,13 @@ sub mkopt {
   my ($moniker, $require_unique, $must_be); # the old positional args
   my $name_test;
 
-  if (@_ == 1 and Params::Util::_HASHLIKE($_[0])) {
-    my $arg = $_[0];
-    ($moniker, $require_unique, $must_be, $name_test)
-      = @$arg{ qw(moniker require_unique must_be name_test) };
-  } else {
-    ($moniker, $require_unique, $must_be) = @_;
+  if (@_) {
+    if (@_ == 1 and Params::Util::_HASHLIKE($_[0])) {
+      ($moniker, $require_unique, $must_be, $name_test)
+        = @{$_[0]}{ qw(moniker require_unique must_be name_test) };
+    } else {
+      ($moniker, $require_unique, $must_be) = @_;
+    }
   }
 
   $moniker = 'unnamed' unless defined $moniker;
