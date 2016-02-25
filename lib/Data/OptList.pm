@@ -173,21 +173,22 @@ sub mkopt {
 
   for (my $i = 0; $i < @$opt_list; $i++) { ## no critic
     my $name = $opt_list->[$i];
-    my $value;
 
     if ($require_unique) {
       Carp::croak "multiple definitions provided for $name" if $seen{$name}++;
     }
 
-    if    ($i == $#$opt_list)               { $value = undef;            }
-    elsif (not defined $opt_list->[$i+1])   { $value = undef; $i++       }
-    elsif ($name_test->($opt_list->[$i+1])) { $value = undef;            }
-    else                                    { $value = $opt_list->[++$i] }
+    my $value;
 
-    if ($must_be and defined $value) {
-      unless (__is_a($value, $must_be)) {
-        my $ref = ref $value;
-        Carp::croak "$ref-ref values are not valid in $moniker opt list";
+    if ($i < $#$opt_list) {
+      if (not defined $opt_list->[$i+1]) {
+        $i++
+      } elsif (! $name_test->($opt_list->[$i+1])) {
+        $value = $opt_list->[++$i];
+        if ($must_be && !__is_a($value, $must_be)) {
+          my $ref = ref $value;
+          Carp::croak "$ref-ref values are not valid in $moniker opt list";
+        }
       }
     }
 
