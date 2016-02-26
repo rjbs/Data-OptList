@@ -148,27 +148,20 @@ sub mkopt {
     # Transform the $must_be specification into a closure $is_a
     # that will check if a value matches the spec
 
-    # Array with single element => scalar
-    # Array with no elements => undef
-    if (ref($must_be) && @$must_be <= 1) {
-      $must_be = $must_be->[0]
-    }
     if (defined $must_be) {
-      if (ref $must_be) {
-        # $must_be is an array with at least 2 elements
-        my @checks = map {
-            my $class = $_;
-            $test_for{$_}
-            || sub { $_[1] = $class; goto \&Params::Util::_INSTANCE }
-        } @$must_be;
-        $is_a = sub {
-          my $value = $_[0];
-          List::Util::first { defined($_->($value)) } @checks
-        };
-      } else {
-        $is_a = $test_for{$must_be}
-          || sub { $_[1] = $must_be; goto \&Params::Util::_INSTANCE }
-      }
+      $must_be = [ $must_be ] unless ref $must_be;
+      my @checks = map {
+          my $class = $_;
+          $test_for{$_}
+          || sub { $_[1] = $class; goto \&Params::Util::_INSTANCE }
+      } @$must_be;
+
+      $is_a = (@checks == 1)
+            ? $checks[0]
+            : sub {
+                my $value = $_[0];
+                List::Util::first { defined($_->($value)) } @checks
+              };
 
       $moniker = 'unnamed' unless defined $moniker;
     }
