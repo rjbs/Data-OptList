@@ -131,23 +131,11 @@ BEGIN {
   );
 }
 
-sub __is_a {
-  my ($got, $expected) = @_;
-
-  return List::Util::first { __is_a($got, $_) } @$expected if ref $expected;
-
-  return defined (
-    exists($test_for{$expected})
-    ? $test_for{$expected}->($got)
-    : Params::Util::_INSTANCE($got, $expected) ## no critic
-  );
-}
-
 sub mkopt {
   my ($opt_list) = shift;
 
   my ($moniker, $require_unique, $must_be); # the old positional args
-  my $name_test;
+  my ($name_test, $is_a);
 
   if (@_) {
     if (@_ == 1 and Params::Util::_HASHLIKE($_[0])) {
@@ -156,9 +144,35 @@ sub mkopt {
     } else {
       ($moniker, $require_unique, $must_be) = @_;
     }
-  }
 
-  $moniker = 'unnamed' unless defined $moniker;
+    # Transform the $must_be specification into a closure $is_a
+    # that will check if a value matches the spec
+
+    # Array with single element => scalar
+    # Array with no elements => undef
+    if (ref($must_be) && @$must_be <= 1) {
+      $must_be = $must_be->[0]
+    }
+    if (defined $must_be) {
+      if (ref $must_be) {
+        # $must_be is an array with at least 2 elements
+        my @checks = map {
+            my $class = $_;
+            $test_for{$_}
+            || sub { $_[1] = $class; goto \&Params::Util::_INSTANCE }
+        } @$must_be;
+        $is_a = sub {
+          my $value = $_[0];
+          List::Util::first { defined($_->($value)) } @checks
+        };
+      } else {
+        $is_a = $test_for{$must_be}
+          || sub { $_[1] = $must_be; goto \&Params::Util::_INSTANCE }
+      }
+
+      $moniker = 'unnamed' unless defined $moniker;
+    }
+  }
 
   return [] unless $opt_list;
 
@@ -185,7 +199,7 @@ sub mkopt {
         $i++
       } elsif (! $name_test->($opt_list->[$i+1])) {
         $value = $opt_list->[++$i];
-        if ($must_be && !__is_a($value, $must_be)) {
+        if ($is_a && !$is_a->($value)) {
           my $ref = ref $value;
           Carp::croak "$ref-ref values are not valid in $moniker opt list";
         }
