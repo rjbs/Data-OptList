@@ -100,10 +100,10 @@ is_deeply(
 }
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, 'ARRAY'); };
-like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['ARRAY']); };
-like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval {
   mkopt(
@@ -114,13 +114,13 @@ eval {
     }
   );
 };
-like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, 'Test::DOL::Obj'); };
-like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['Test::DOL::Obj']); };
-like($@, qr/HASH-ref values are not/, "exception tossed on invaild ref value");
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 is_deeply(
   OPT([ foo => { a => 1 }, ':bar' => undef, 'baz' ]),
