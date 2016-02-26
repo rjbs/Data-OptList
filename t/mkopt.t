@@ -84,6 +84,18 @@ is_deeply(
   "opt list of names and values expands with [must_be]",
 );
 
+is_deeply(
+  OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, [qw< HASH CODE >]),
+  [ [ foo => { a => 1 } ], [ ':bar' => undef ], [ baz => undef ] ],
+  "opt list of names and values expands with [must_be]",
+);
+
+is_deeply(
+  OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, [qw< CODE HASH >]),
+  [ [ foo => { a => 1 } ], [ ':bar' => undef ], [ baz => undef ] ],
+  "opt list of names and values expands with [must_be]",
+);
+
 {
   bless((my $object = {}), 'Test::DOL::Obj');
   is_deeply(
@@ -97,12 +109,27 @@ is_deeply(
     [ [ foo => $object ], [ ':bar' => undef ], [ baz => undef ] ],
     "opt list of names and values expands with [must_be], must_be object",
   );
+
+  is_deeply(
+    OPT([ foo => $object, ':bar', 'baz' ], 0, ['ARRAY', 'HASH', 'CODE', 'SCALAR', 'Test::DOL::Obj']),
+    [ [ foo => $object ], [ ':bar' => undef ], [ baz => undef ] ],
+    "opt list of names and values expands with [must_be], must_be object",
+  );
+
+  is_deeply(
+    OPT([ foo => $object, ':bar', 'baz' ], 0, ['Test::DOL::Obj', 'CODE']),
+    [ [ foo => $object ], [ ':bar' => undef ], [ baz => undef ] ],
+    "opt list of names and values expands with [must_be], must_be object",
+  );
 }
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, 'ARRAY'); };
 like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['ARRAY']); };
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
+
+eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['ARRAY', 'CODE', 'SCALAR', 'Foo']); };
 like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval {
@@ -120,6 +147,9 @@ eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, 'Test::DOL::Obj'); };
 like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['Test::DOL::Obj']); };
+like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
+
+eval { OPT([ foo => { a => 1 }, ':bar', 'baz' ], 0, ['CODE', 'Test::DOL::Obj']); };
 like($@, qr/HASH-ref values are not/, "exception tossed on invalid ref value");
 
 is_deeply(
