@@ -1,6 +1,7 @@
 Revision history for Sub-Exporter
 
 {{$NEXT}}
+        - major optimization to mkopt (thanks, Olivier Mengué)
 
 0.109     2013-12-13 08:30:34 America/New_York
           update bugtracker and repo links
