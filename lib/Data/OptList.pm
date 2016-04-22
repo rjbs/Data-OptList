@@ -152,8 +152,8 @@ sub mkopt {
       $must_be = [ $must_be ] unless ref $must_be;
       my @checks = map {
           my $class = $_;
-          $test_for{$_}
-          || sub { $_[1] = $class; goto \&Params::Util::_INSTANCE }
+          $test_for{$class}
+          || sub { Params::Util::_INSTANCE($_[0], $class) }
       } @$must_be;
 
       $is_a = (@checks == 1)
