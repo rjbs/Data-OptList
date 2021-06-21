@@ -6,7 +6,7 @@ Revision history for Sub-Exporter
         - update author contact info
         - add perl version support to docs
         - replace a "goto" deep in the guts with a sub call, for speed (thanks,
-          Olivier Mengué and Graham Knopp)
+          Olivier Mengué and Graham Knop)
 
 0.110     2016-03-24 21:20:54-04:00 America/New_York
         - major optimization to mkopt (thanks, Olivier Mengué)
