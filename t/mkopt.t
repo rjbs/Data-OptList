@@ -10,6 +10,7 @@ These tests test option list cannonization (from an option list into a aref).
 
 use Data::OptList;
 use Sub::Install;
+use Params::SomeUtil ();
 use Test::More 0.88;
 
 
@@ -183,7 +184,7 @@ is_deeply(
     [ @input ],
     {
       moniker   => 'test',
-      name_test => sub { ! ref $_[0] or Params::Util::_ARRAYLIKE($_[0]) },
+      name_test => sub { ! ref $_[0] or Params::SomeUtil::_ARRAYLIKE($_[0]) },
     },
   ),
   [
