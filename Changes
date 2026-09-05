@@ -1,6 +1,8 @@
 Revision history for Sub-Exporter
 
 {{$NEXT}}
+
+0.115     2026-09-05 16:26:13+09:30 Australia/Adelaide
         - switch from Params::Util to Params::SomeUtil
 
 0.114     2023-05-06 17:25:36-04:00 America/New_York
