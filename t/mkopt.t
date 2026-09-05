@@ -12,7 +12,6 @@ use Data::OptList;
 use Sub::Install;
 use Test::More 0.88;
 
-
 # let's get a convenient copy to use:
 Sub::Install::install_sub({
   code => 'mkopt',
@@ -183,7 +182,7 @@ is_deeply(
     [ @input ],
     {
       moniker   => 'test',
-      name_test => sub { ! ref $_[0] or Params::Util::_ARRAYLIKE($_[0]) },
+      name_test => sub { ! ref $_[0] or Params::SomeUtil::_ARRAYLIKE($_[0]) },
     },
   ),
   [
